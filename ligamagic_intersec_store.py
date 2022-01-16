@@ -11,11 +11,18 @@ def print_green(text):
 
 def print_red(text):
     print("\033[91m" + text + "\033[0;0m")
-
+#www.ligamagic.com.br/?view=cards%2Fsearch&card=Fornecedora+do+Suturador
 def ler_cartas():
     with open("cartas", "r") as f:
         linhas = f.readlines()
         return set([" ".join(linha.split()[1:]) for linha in linhas])
+
+def mostar_menu():
+    print()
+    print("Digite lista para ver o nome de todas as lojas")
+    print("Digite rank para ver as 5 lojas com mais cartas")
+    print("Aperte ENTER para sair")
+
 
 def vendedoras_da_carta(carta):
     lojas = set()
@@ -41,7 +48,7 @@ def criar_lojas_dict(cartas):
 
 def mostrar_lojas_full(lojas, cartas):
     print()
-    print_bold("========== LOJAS QUE VENDEM TODAS CARTAS ==========")
+    print_green("========== LOJAS QUE VENDEM TODAS CARTAS ==========")
     for loja in lojas:
         if len(lojas[loja]) == len(cartas):
             print(loja)
@@ -57,14 +64,18 @@ def ver_loja_especifica(lojas, loja, cartas):
         print(carta)
     print("\n"+len(s)*"="+"\n")
 
+def rank(lojas):
+    print_bold("\n========== RANKING ==========\n")
+    for loja in sorted(lojas, key=lambda k: len(lojas[k]), reverse=True)[0:5]:
+        print(len(lojas[loja]), loja)
+    print()
+
 
 if __name__ == "__main__":
     cartas = ler_cartas()
     lojas = criar_lojas_dict(cartas)
     mostrar_lojas_full(lojas, cartas)
-    print()
-    print("Digite lista para ver o nome de todas as lojas")
-    print("Aperte ENTER para sair")
+    mostar_menu()
     s = input("Digite o nome de loja para ver as cartas específicas: ")
     
     while s != "":
@@ -73,11 +84,12 @@ if __name__ == "__main__":
             for loja in sorted(list(lojas.keys())):
                 print(loja)
             print()
+        elif s == "rank":
+            rank(lojas)
         else:
             if s in lojas:
                 ver_loja_especifica(lojas, s, set(cartas))
             else:
                 print_red("\nLoja não encontrada\n")
-        print("Digite lista para ver o nome de todas as lojas")
-        print("Aperte ENTER para sair")
+        mostar_menu()
         s = input("Digite o nome de loja para ver as cartas específicas: ")
